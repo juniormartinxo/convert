@@ -1,13 +1,13 @@
 import { HttpModule } from '@nestjs/axios'
 import { Module } from '@nestjs/common'
-import { CaptorService } from 'src/captor/captor.service'
 import { ConverterModule } from 'src/converter/converter.module'
-import { ConverterService } from 'src/converter/converter.service'
+import { UtilsModule } from 'src/utils/utils.module'
 import { ConvertCommand } from './commands/convert.command'
 
 @Module({
-  imports: [ConverterModule, HttpModule],
+  imports: [HttpModule, UtilsModule, ConverterModule],
   controllers: [],
-  providers: [ConvertCommand, ConverterService, CaptorService],
+  providers: [ConvertCommand],
+  exports: [ConvertCommand],
 })
 export class CliModule {}
