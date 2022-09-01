@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    entrypoint: .docker/entrypoint.sh
+    container_name: converter_service
+    ports:
+      - '${APP_PORT}:${APP_PORT}'
+    environment:
+      - TZ=America/Sao_Paulo
+    volumes:
+      - .:/home/node/app
