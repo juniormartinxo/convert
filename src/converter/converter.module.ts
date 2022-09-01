@@ -1,11 +1,12 @@
 import { HttpModule } from '@nestjs/axios'
 import { Module } from '@nestjs/common'
-import { CaptorService } from 'src/captor/captor.service'
+import { CaptorModule } from 'src/captor/captor.module'
 import { ConverterService } from './converter.service'
 
 @Module({
-  imports: [HttpModule],
+  imports: [HttpModule, CaptorModule],
   controllers: [],
-  providers: [ConverterService, CaptorService],
+  providers: [ConverterService],
+  exports: [ConverterService],
 })
 export class ConverterModule {}
