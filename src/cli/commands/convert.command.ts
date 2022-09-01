@@ -12,6 +12,6 @@ export class ConvertCommand extends CommandRunner {
   }
 
   async run(inputs: string[]): Promise<void> {
-    await this.converterService.getLog(inputs[0], inputs[1])
+    await this.converterService.handle(inputs[0], inputs[1])
   }
 }
