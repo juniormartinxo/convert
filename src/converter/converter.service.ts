@@ -1,50 +1,38 @@
 import { Injectable } from '@nestjs/common'
-import { createWriteStream } from 'fs'
+import { randomUUID } from 'crypto'
 import { CaptorService } from 'src/captor/captor.service'
 import { AnimationService } from 'src/utils/animation.service'
-import { CreateDirectoryService } from 'src/utils/create-directory.service'
+import { DirectoryService } from 'src/utils/directory.service'
+import { FileService } from 'src/utils/file.service'
 
 @Injectable()
 export class ConverterService {
   constructor(
     private readonly captorService: CaptorService,
-    private readonly createDirectoryService: CreateDirectoryService,
+    private readonly directoryService: DirectoryService,
     private readonly animationService: AnimationService,
+    private readonly fileService: FileService,
   ) {}
 
   async handle(url: string, destinationFile: string): Promise<any> {
+    const fileTemp = `./logs-tmp/${randomUUID()}.txt`
+
     this.captorService.url = url
     const log = await this.captorService.getLog()
-
     const fileStream = log.data
 
-    const animation = this.animationService.handle()
+    const fileStreamTemp = await this.fileService.createByStream(fileTemp, fileStream)
 
-    const pathOutput = this.createDirectoryService.handle(destinationFile)
+    fileStreamTemp.on('end', async () => {
+      console.log('Temporary log created successfully!!! 🥳')
 
-    const writeStream = createWriteStream(await pathOutput)
+      const fileFinal = await this.directoryService.create(destinationFile)
 
-    writeStream.setMaxListeners(11)
+      const file = await this.fileService.createLogAgora(fileTemp, fileFinal)
 
-    fileStream
-      .on('data', (data: { toString: () => string | NodeJS.ArrayBufferView }) => {
-        animation
-
-        try {
-          writeStream.write(data.toString() + '\n')
-        } catch (e) {
-          console.log(`😕 Oops! An error has occurred: ${e}`)
-        }
+      file.on('end', () => {
+        console.log('Agora log created successfully!!! 🥳')
       })
-      .on('end', () => {
-        clearInterval(animation)
-
-        writeStream.on('finish', () => {
-          console.log('File created successfully!!! 🥳')
-        })
-
-        writeStream.end()
-        writeStream.close()
-      })
+    })
   }
 }
