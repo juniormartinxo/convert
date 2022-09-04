@@ -1,5 +1,3 @@
-import { TransformService } from './utils/transform.service'
-import { FileService } from './utils/file.service'
 import { UtilsModule } from './utils/utils.module'
 import { CaptorModule } from './captor/captor.module'
 import { Module } from '@nestjs/common'
