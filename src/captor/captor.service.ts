@@ -7,7 +7,7 @@ export class CaptorService {
   url: string
   constructor(private readonly httpService: HttpService) {}
 
-  async getLog(): Promise<any> {
+  async handle(): Promise<any> {
     return await lastValueFrom(this.httpService.get(this.url, { responseType: 'stream' }))
   }
 }

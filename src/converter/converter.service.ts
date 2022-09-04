@@ -15,13 +15,12 @@ export class ConverterService {
   ) {}
 
   async handle(url: string, destinationFile: string): Promise<any> {
-    console.log('url', url)
     const start = performance.now()
     const animation = this.animationService.handle('Downloading the log file...')
     const fileTemp = `tempfiles/${randomUUID()}.txt`
 
     this.captorService.url = url
-    const log = await this.captorService.getLog()
+    const log = await this.captorService.handle()
     const fileStream = log.data
 
     const pathOutputTemp = await this.directoryService.create(fileTemp)
