@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 @Injectable()
 export class AnimationService {
-  handle(stop = false, text = 'Please, wait a moment...') {
+  handle(text = 'Please, wait a moment...') {
     const chars = ['⠙', '⠘', '⠰', '⠴', '⠤', '⠦', '⠆', '⠃', '⠋', '⠉']
     const delay = 100
     let x = 0
@@ -12,10 +12,6 @@ export class AnimationService {
       process.stdout.write('')
       x = x % chars.length
     }, delay)
-
-    if (stop) {
-      clearInterval(animation)
-    }
 
     return animation
   }
