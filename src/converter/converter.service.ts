@@ -15,6 +15,7 @@ export class ConverterService {
   ) {}
 
   async handle(url: string, destinationFile: string): Promise<any> {
+    console.log('url', url)
     const start = performance.now()
     const animation = this.animationService.handle('Downloading the log file...')
     const fileTemp = `tempfiles/${randomUUID()}.txt`
@@ -33,9 +34,7 @@ export class ConverterService {
 
       clearInterval(animation)
 
-      //this.fileService.createByReadLine(fileTemp, pathOutputFinal, start)
-      //this.fileService.createByNReadLines(fileTemp, pathOutputFinal, start)
-      this.fileService.createByLineReader(fileTemp, pathOutputFinal, start)
+      this.fileService.createByReadLine(fileTemp, pathOutputFinal, start)
     })
   }
 }
