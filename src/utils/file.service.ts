@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { once } from 'events'
 import { createReadStream, createWriteStream, unlink } from 'fs'
 import { createInterface } from 'readline'
-import { AnimationService } from 'src/utils/animation.service'
+import { AnimationService } from 'src/utils/animation/animation.service'
 import { TransformService } from './transform.service'
 
 @Injectable()
