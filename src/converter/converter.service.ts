@@ -15,24 +15,27 @@ export class ConverterService {
   ) {}
 
   async handle(url: string, destinationFile: string): Promise<any> {
-    const fileTemp = `./logs-tmp/${randomUUID()}.txt`
+    const start = performance.now()
+    const animation = this.animationService.handle('Downloading the log file...')
+    const fileTemp = `tempfiles/${randomUUID()}.txt`
 
     this.captorService.url = url
     const log = await this.captorService.getLog()
     const fileStream = log.data
 
-    const fileStreamTemp = await this.fileService.createByStream(fileTemp, fileStream)
+    const pathOutputTemp = await this.directoryService.create(fileTemp)
+    const pathOutputFinal = await this.directoryService.create(destinationFile)
 
-    fileStreamTemp.on('end', async () => {
-      console.log('Temporary log created successfully!!! 🥳')
+    const fileStreamTemp = await this.fileService.createByStream(pathOutputTemp, fileStream)
 
-      const fileFinal = await this.directoryService.create(destinationFile)
+    await fileStreamTemp.on('end', async () => {
+      console.log('\n✔️ Information saved successfully!!!')
 
-      const file = await this.fileService.createLogAgora(fileTemp, fileFinal)
+      clearInterval(animation)
 
-      file.on('end', () => {
-        console.log('Agora log created successfully!!! 🥳')
-      })
+      //this.fileService.createByReadLine(fileTemp, pathOutputFinal, start)
+      //this.fileService.createByNReadLines(fileTemp, pathOutputFinal, start)
+      this.fileService.createByLineReader(fileTemp, pathOutputFinal, start)
     })
   }
 }
