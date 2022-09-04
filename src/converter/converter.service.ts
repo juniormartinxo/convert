@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { randomUUID } from 'crypto'
 import { CaptorService } from 'src/captor/captor.service'
 import { AnimationService } from 'src/utils/animation/animation.service'
-import { DirectoryService } from 'src/utils/directory.service'
+import { DirectoryService } from 'src/utils/directory/directory.service'
 import { FileService } from 'src/utils/file.service'
 
 @Injectable()
