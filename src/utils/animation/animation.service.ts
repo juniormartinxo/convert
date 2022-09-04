@@ -7,7 +7,7 @@ export class AnimationService {
     const delay = 100
     let x = 0
 
-    const animation = setInterval(function () {
+    const animation = setInterval(() => {
       process.stdout.write('\r🔥' + chars[x++] + ' ' + text + '  ')
       process.stdout.write('')
       x = x % chars.length
