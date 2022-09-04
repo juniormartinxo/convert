@@ -1,64 +1,68 @@
 import { Injectable } from '@nestjs/common'
+import { once } from 'events'
 import { createReadStream, createWriteStream, unlink } from 'fs'
+import { createInterface } from 'readline'
 import { AnimationService } from 'src/utils/animation.service'
+import { TransformService } from './transform.service'
 
 @Injectable()
 export class FileService {
-  constructor(private readonly animationService: AnimationService) {}
+  constructor(
+    private readonly animationService: AnimationService,
+    private readonly serviceTransform: TransformService,
+  ) {}
 
   async createByStream(pathOutput: string, fileStream: any) {
-    const animation = this.animationService.handle()
     const writeStream = createWriteStream(pathOutput)
 
     writeStream.setMaxListeners(11)
 
-    fileStream
-      .on('data', (data: NodeJS.ArrayBufferView) => {
-        animation
-
-        try {
-          writeStream.write(data.toString() !== '' ? data.toString() : '')
-        } catch (e) {
-          console.log(`😕 Oops! An error has occurred: ${e}`)
-        }
-      })
-      .on('end', () => {
-        clearInterval(animation)
-
-        writeStream.on('finish', () => {
-          console.log('File created successfully!!! 🥳')
-        })
-
-        writeStream.end()
-        writeStream.close()
-      })
+    fileStream.pipe(writeStream)
 
     return fileStream
   }
 
-  async createLogAgora(fileTemp: string, pathOutput: string) {
-    const readStream = createReadStream(pathOutput)
-    const animation = this.animationService.handle()
-    const writeStream = createWriteStream(pathOutput)
+  async createByReadLine(fileTemp: string, destinationFile: string, start: number) {
+    const animation = this.animationService.handle('Transcribing the log file to Agora Log format...')
+    const writeStream = createWriteStream(destinationFile)
+    writeStream.setMaxListeners(11)
+    const pathLogTemp = `./logs/${fileTemp}`
 
-    readStream
-      .on('data', (data: NodeJS.ArrayBufferView) => {
-        animation
+    const rl = createInterface({
+      input: createReadStream(pathLogTemp),
+      crlfDelay: Infinity,
+    })
 
-        try {
-          writeStream.write(data.toString() !== '' ? data.toString() : '')
-        } catch (e) {
-          console.log(`😕 Oops! An error has occurred: ${e}`)
+    rl.on('line', line => {
+      const logLine = line !== '' ? `${this.serviceTransform.handle(line)}\n` : ''
+      writeStream.write(logLine)
+    }).on('close', () => {
+      clearInterval(animation)
+      console.log('\n🥳 Agora Log created successfully!!!')
+
+      unlink(pathLogTemp, err => {
+        if (err) {
+          console.error(err)
         }
       })
-      .on('end', () => {
-        unlink(fileTemp, err => {
-          if (err) {
-            console.log(`😕 Oops! An error has occurred: ${err}`)
-          }
-        })
-      })
+    })
 
-    return readStream
+    await once(rl, 'close')
+
+    const memUsed = process.memoryUsage().heapUsed / 1024 / 1024
+
+    this.msg('createByReadLine', memUsed, start)
+  }
+
+  msg(func: string, used: number, start: number) {
+    const end = performance.now()
+    const milliseconds = end - start
+    const minutes = Math.floor(milliseconds / 60000)
+    const seconds = ((milliseconds % 60000) / 1000).toFixed(0)
+    const runtime = minutes + ':' + (+seconds < 10 ? '0' : '') + seconds
+
+    console.log(`\n\n ------------------ ${func} ------------------`)
+    console.log(`Memory used: ${Math.round(used * 100) / 100} MB`)
+    console.log(`Runtime: ${runtime}`)
   }
 }
