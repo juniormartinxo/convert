@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 @Injectable()
 export class AnimationService {
-  handle(text = 'Please, wait a moment...') {
+  handle(text = 'Please, wait a moment...'): NodeJS.Timer {
     const chars = ['⠙', '⠘', '⠰', '⠴', '⠤', '⠦', '⠆', '⠃', '⠋', '⠉']
     const delay = 100
     let x = 0
