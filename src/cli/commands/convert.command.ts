@@ -19,19 +19,7 @@ export class ConvertCommand extends CommandRunner {
     const isValidFile = this.isValidFile(inputs[1])
     const isOnline = await this.isOnline(inputs[0])
 
-    if (!isValidUrl) {
-      console.log('❌ Please, insert a valid URL')
-    } else {
-      if (isOnline === false) {
-        console.log('❌ The URL is not online or the source file does not exist')
-      }
-    }
-
-    if (isValidFile === false) {
-      console.log('❌ The destination file must have a valid extension (*.txt or *.log)')
-    }
-
-    if (isValidUrl && isValidFile) {
+    if (isValidUrl && isValidFile && isOnline) {
       await this.converterService.handle(inputs[0], inputs[1])
     }
   }
@@ -49,6 +37,7 @@ export class ConvertCommand extends CommandRunner {
       new URL(url)
       return true
     } catch (_) {
+      console.log('❌ Please, insert a valid URL')
       return false
     }
   }
@@ -59,8 +48,14 @@ export class ConvertCommand extends CommandRunner {
         response => response.status,
       )
 
-      return status === 200 ? true : false
+      if (status === 200) {
+        return true
+      } else {
+        console.log('❌ The URL is not online or the source file does not exist')
+        return false
+      }
     } catch (_) {
+      console.log('❌ The URL is not online or the source file does not exist')
       return false
     }
   }
@@ -69,6 +64,8 @@ export class ConvertCommand extends CommandRunner {
     if (directory.endsWith('.txt') || directory.endsWith('.log')) {
       return true
     }
+
+    console.log('❌ The destination file must have a valid extension (*.txt or *.log)')
 
     return false
   }
