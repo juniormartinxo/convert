@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common'
 @Injectable()
 export class TransformService {
   handle(log: string): string {
+    log.replace('\r', '')
+
     const arrLog = log.split('|')
 
     const logMethodUriProtocol = arrLog[3].replace('"', '').split(' ')
