@@ -63,7 +63,7 @@ The logs will be stored in the `./logs/*` folder.
 
 After running the command, the output should look like the image below:
 
-![image](https://user-images.githubusercontent.com/4163340/188481964-97f5272b-74aa-41ad-b112-4cd8f53b5859.png)
+![image](https://user-images.githubusercontent.com/4163340/188482205-b4d04906-6c63-4749-960f-51d8db5e0a6e.png)
 
 ## Stay in touch
 
