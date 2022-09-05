@@ -61,6 +61,10 @@ $ node dist/main convert https://mjpsolucoes.com.br/logs/input-01.txt output/min
 
 The logs will be stored in the `./logs/*` folder.
 
+After running the command, the output should look like the image below:
+
+![image](https://user-images.githubusercontent.com/4163340/188481964-97f5272b-74aa-41ad-b112-4cd8f53b5859.png)
+
 ## Stay in touch
 
 - Author - [Junior Martins](https://www.linkedin.com/in/juniormartinxo/)
