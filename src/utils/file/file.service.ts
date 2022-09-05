@@ -3,6 +3,7 @@ import { once } from 'events'
 import { createReadStream, createWriteStream, unlink } from 'fs'
 import { createInterface } from 'readline'
 import { AnimationService } from 'src/utils/animation/animation.service'
+import { Readable } from 'stream'
 import { TransformService } from '../transform/transform.service'
 
 @Injectable()
@@ -12,7 +13,7 @@ export class FileService {
     private readonly serviceTransform: TransformService,
   ) {}
 
-  async createByStream(pathOutput: string, fileStream: any) {
+  async createByStream(pathOutput: string, fileStream: any): Promise<Readable> {
     const writeStream = createWriteStream(pathOutput)
 
     writeStream.setMaxListeners(11)
@@ -32,6 +33,10 @@ export class FileService {
       input: createReadStream(pathLogTemp),
       crlfDelay: Infinity,
     })
+
+    writeStream.write('#Version: 1.0')
+    writeStream.write(`#Version: ${this.getDate()}`)
+    writeStream.write(`#Fields: provider http-method status-code uri-path time-taken response-size cache-status`)
 
     rl.on('line', line => {
       const logLine = line !== '' ? `${this.serviceTransform.handle(line)}\n` : ''
@@ -64,5 +69,17 @@ export class FileService {
     console.log(`\n\n ------------------ ${func} ------------------`)
     console.log(`Memory used: ${Math.round(used * 100) / 100} MB`)
     console.log(`Runtime: ${runtime}`)
+  }
+
+  getDate() {
+    const date = new Date()
+    const day = date.getDate()
+    const month = date.getMonth() + 1
+    const year = date.getFullYear()
+    const hour = date.getHours()
+    const minutes = date.getMinutes()
+    const seconds = date.getSeconds()
+
+    return `${day}/${month}/${year} ${hour}-${minutes}-${seconds}`
   }
 }
