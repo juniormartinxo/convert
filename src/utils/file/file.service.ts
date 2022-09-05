@@ -34,11 +34,14 @@ export class FileService {
       crlfDelay: Infinity,
     })
 
-    writeStream.write('#Version: 1.0')
-    writeStream.write(`#Version: ${this.getDate()}`)
-    writeStream.write(`#Fields: provider http-method status-code uri-path time-taken response-size cache-status`)
+    writeStream.write('#Version: 1.0\n')
+    writeStream.write(`#Version: ${this.getDate()}\n`)
+    writeStream.write(`#Fields: provider http-method status-code uri-path time-taken response-size cache-status\n`)
+
+    let num = 0
 
     rl.on('line', line => {
+      num++
       const logLine = line !== '' ? `${this.serviceTransform.handle(line)}\n` : ''
       writeStream.write(logLine)
     }).on('close', () => {
@@ -54,21 +57,24 @@ export class FileService {
 
     await once(rl, 'close')
 
-    const memUsed = process.memoryUsage().heapUsed / 1024 / 1024
+    const memory_used = process.memoryUsage().heapUsed / 1024 / 1024
 
-    this.msg('createByReadLine', memUsed, start)
+    this.msg(memory_used, start, num)
   }
 
-  msg(func: string, used: number, start: number) {
+  msg(memory_used: number, start: number, number_of_records: number) {
     const end = performance.now()
     const milliseconds = end - start
     const minutes = Math.floor(milliseconds / 60000)
     const seconds = ((milliseconds % 60000) / 1000).toFixed(0)
     const runtime = minutes + ':' + (+seconds < 10 ? '0' : '') + seconds
 
-    console.log(`\n\n ------------------ ${func} ------------------`)
-    console.log(`Memory used: ${Math.round(used * 100) / 100} MB`)
+    console.log(`\n\n ------------------ RESUME ------------------`)
+    console.log(`Número de registros: ${number_of_records}`)
+    console.log(`Memory used: ${Math.round(memory_used * 100) / 100} MB`)
     console.log(`Runtime: ${runtime}`)
+
+    return { memory_used: memory_used, number_of_records: number_of_records, runtime: runtime }
   }
 
   getDate() {
