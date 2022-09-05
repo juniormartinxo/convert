@@ -9,7 +9,23 @@ describe('AnimationService', () => {
       providers: [AnimationService],
     }).compile()
 
+    process.stdout.write = jest.fn()
+    process.exit
     animationService = moduleRef.get<AnimationService>(AnimationService)
+    process.exit
+    process.stdout.write.call
+  })
+
+  beforeAll(() => {
+    process.stdout.write = jest.fn()
+    process.exit
+    process.stdout.write.call
+  })
+
+  afterAll(() => {
+    process.stdout.write = jest.fn()
+    process.exit
+    process.stdout.write.call
   })
 
   it('should be defined', () => {
@@ -18,7 +34,7 @@ describe('AnimationService', () => {
 
   describe('handle', () => {
     it('should return a timer', () => {
-      expect(typeof animationService.handle()).toBe('object')
+      expect(typeof animationService.handle('')).toBe('object')
       expect(animationService).toEqual({})
     })
   })

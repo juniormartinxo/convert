@@ -2,14 +2,13 @@ import { Injectable } from '@nestjs/common'
 
 @Injectable()
 export class AnimationService {
-  handle(text = 'Please, wait a moment...'): NodeJS.Timer {
+  handle(text: string): NodeJS.Timer {
     const chars = ['⠙', '⠘', '⠰', '⠴', '⠤', '⠦', '⠆', '⠃', '⠋', '⠉']
     const delay = 100
     let x = 0
 
     const animation = setInterval(() => {
-      process.stdout.write('\r🔥' + chars[x++] + ' ' + text + '  ')
-      process.stdout.write('')
+      text !== '' ? process.stdout.write('\r🔥' + chars[x++] + ' ' + text + '  ') : null
       x = x % chars.length
     }, delay)
 
