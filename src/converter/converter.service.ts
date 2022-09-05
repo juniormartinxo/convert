@@ -28,7 +28,7 @@ export class ConverterService {
 
     const fileStreamTemp = await this.fileService.createByStream(pathOutputTemp, fileStream)
 
-    await fileStreamTemp.on('end', async () => {
+    fileStreamTemp.on('end', async () => {
       console.log('\n✔️ Information saved successfully!!!')
 
       clearInterval(animation)
