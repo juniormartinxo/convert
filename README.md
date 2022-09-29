@@ -9,7 +9,7 @@
 
 ## Description
 
-Testing stream usage with NestJS by converting a very large log file to another format
+Testing using stream through a CLI created with NestJS for converting a very large log file to another format
 
 ## Installation
 
