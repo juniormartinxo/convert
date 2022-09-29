@@ -9,7 +9,7 @@
 
 ## Description
 
-Test carried out for vacancy in the [Agile Content](https://www.agilecontent.com/) company through [TechNation](https://www.linkedin.com/company/technationbrasil/).
+Testing stream usage with NestJS by converting a very large log file to another format
 
 ## Installation
 
@@ -46,12 +46,6 @@ $ node dist/main convert origin destination
 ```
 
 ## Example commands
-
-To transform the available log in the test itself (4 records)
-
-```bash
-$ node dist/main convert s3.amazonaws.com/uux-itaas-static/minha-cdn-logs/input-01.txt output/minhaCdn-s3-amazonaws.txt
-```
 
 To transform the log with more records to test a larger volume (10.368.000 records).
 
